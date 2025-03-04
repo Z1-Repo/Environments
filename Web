@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Environments Deployments</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        td {
+            cursor: pointer;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Environment Table</h1>
+
+    <h2>Frontend Environments</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>SR. No.</th>
+                <th>Environment</th>
+                <th>Developer</th>
+                <th>QA</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td contenteditable="true">Frontend - Development</td>
+                <td contenteditable="true">John Doe</td>
+                <td contenteditable="true">Jane Smith</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td contenteditable="true">Frontend - Staging</td>
+                <td contenteditable="true">Alice Brown</td>
+                <td contenteditable="true">Bob White</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td contenteditable="true">Frontend - Testing</td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td contenteditable="true">Frontend - QA</td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td contenteditable="true">Frontend - Production</td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Backend Environments</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>SR. No.</th>
+                <th>Environment</th>
+                <th>Developer</th>
+                <th>QA</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td contenteditable="true">Backend - Development</td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td contenteditable="true">Backend - Staging</td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td contenteditable="true">Backend - Testing</td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td contenteditable="true">Backend - QA</td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td contenteditable="true">Backend - Production</td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button onclick="saveTableData()">Save</button>
+
+    <script>
+        function saveTableData() {
+            const tables = document.querySelectorAll('table');
+            const data = [];
+
+            tables.forEach((table, tableIndex) => {
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach((row) => {
+                    const cells = row.querySelectorAll('td');
+                    const rowData = {
+                        table: tableIndex + 1,
+                        srNo: cells[0].innerText,
+                        environment: cells[1].innerText,
+                        developer: cells[2].innerText,
+                        qa: cells[3].innerText
+                    };
+                    data.push(rowData);
+                });
+            });
+
+            console.log(data); // Replace this with your save logic (e.g., API call)
+            alert('Table data saved successfully! Check the console for details.');
+        }
+    </script>
+</body>
+</html>
