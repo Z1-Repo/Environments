@@ -1,7 +1,7 @@
 const GITHUB_USER = "Z1-Repo";
 const REPO_NAME = "Environments";
 const FILE_PATH = "data/db.json";
-const TOKEN = "your-github-token";
+const TOKEN = "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";
 
 // Fetch and display table data
 async function fetchData() {
