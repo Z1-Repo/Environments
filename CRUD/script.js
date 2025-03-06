@@ -1,5 +1,5 @@
-const GITHUB_USER = "your-username";
-const REPO_NAME = "your-repo";
+const GITHUB_USER = "Z1-Repo";
+const REPO_NAME = "Environments";
 const FILE_PATH = "data/db.json";
 const TOKEN = "your-github-token";
 
