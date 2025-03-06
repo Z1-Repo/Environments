@@ -1,0 +1,63 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: linear-gradient(to right, #4e54c8, #8f94fb);
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    text-transform: uppercase;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+section {
+    margin: 40px 0;
+}
+
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid white;
+    transition: transform 0.3s ease;
+}
+
+th {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+tr:hover {
+    transform: scale(1.05);
+}
+
+input {
+    padding: 8px;
+    margin: 5px;
+}
+
+button {
+    padding: 8px 16px;
+    background-color: #ff4757;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: #e84118;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
