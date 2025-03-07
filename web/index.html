@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Webpage</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        header {
+            background-color: red;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        main {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .table-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 45%;
+            min-width: 400px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .table-section:hover {
+            transform: scale(1.02);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        th {
+            background: red;
+            color: white;
+        }
+
+        .actions button {
+            margin-right: 5px;
+            padding: 5px;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background 0.3s;
+        }
+
+        .edit-btn {
+            background: orange;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background: darkorange;
+        }
+
+        .delete-btn {
+            background: crimson;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: darkred;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Environment Status</h1>
+    </header>
+    <main>
+        <!--<button onclick="addColumn('frontendTable')">Add Column to Frontend Table</button>-->
+        <!--<button onclick="addColumn('backendTable')">Add Column to Backend Table</button>-->
+        
+        <section class="table-section">
+            <h2>Frontend Table</h2>
+            <form onsubmit="addFrontendRecord(event)">
+                <input type="text" id="frontendEnv" placeholder="Environment" required>
+                <input type="text" id="frontendBuild" placeholder="Build" required>
+                <input type="text" id="frontendDev" placeholder="Developer" required>
+                <input type="text" id="frontendQA" placeholder="QA" required>
+                <button type="submit">Add Row</button>
+            </form>
+            <table id="frontendTable">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Environment</th>
+                        <th>Build</th>
+                        <th>Developer</th>
+                        <th>QA</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="table-section">
+            <h2>Backend Table</h2>
+            <form onsubmit="addBackendRecord(event)">
+                <input type="text" id="backendEnv" placeholder="Environment" required>
+                <input type="text" id="backendBuild" placeholder="Build" required>
+                <input type="text" id="backendDev" placeholder="Developer" required>
+                <input type="text" id="backendQA" placeholder="QA" required>
+                <button type="submit">Add Row</button>
+            </form>
+            <table id="backendTable">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Environment</th>
+                        <th>Build</th>
+                        <th>Developer</th>
+                        <th>QA</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script>
+        function addColumn(tableId) {
+            const table = document.getElementById(tableId);
+            const headerRow = table.querySelector("thead tr");
+            const newColIndex = headerRow.cells.length - 1;
+            
+            const columnName = prompt("Enter column name:");
+            if (!columnName) return;
+
+            const th = document.createElement("th");
+            th.textContent = columnName;
+            headerRow.insertBefore(th, headerRow.lastElementChild);
+
+            const rows = table.querySelectorAll("tbody tr");
+            rows.forEach(row => {
+                const td = document.createElement("td");
+                td.contentEditable = "true";
+                row.insertBefore(td, row.lastElementChild);
+            });
+        }
+
+        function addFrontendRecord(event) {
+            event.preventDefault();
+            addRecord("frontendTable", document.getElementById("frontendEnv").value, document.getElementById("frontendBuild").value, document.getElementById("frontendDev").value, document.getElementById("frontendQA").value);
+        }
+
+        function addBackendRecord(event) {
+            event.preventDefault();
+            addRecord("backendTable", document.getElementById("backendEnv").value, document.getElementById("backendBuild").value, document.getElementById("backendDev").value, document.getElementById("backendQA").value);
+        }
+
+        function addRecord(tableId, env, build, dev, qa) {
+            const table = document.getElementById(tableId).querySelector("tbody");
+            const row = table.insertRow();
+            const count = table.rows.length;
+            row.innerHTML = `
+                <td>${count}</td>
+                <td contenteditable="true">${env}</td>
+                <td contenteditable="true">${build}</td>
+                <td contenteditable="true">${dev}</td>
+                <td contenteditable="true">${qa}</td>
+                <td>
+                    <button class='edit-btn' onclick='editRow(this)'>Edit</button>
+                    <button class='delete-btn' onclick='deleteRow(this)'>Delete</button>
+                </td>
+            `;
+        }
+
+        function editRow(button) {
+            const row = button.parentElement.parentElement;
+            row.querySelectorAll("td[contenteditable]").forEach(cell => cell.focus());
+        }
+
+        function deleteRow(button) {
+            button.parentElement.parentElement.remove();
+        }
+    </script>
+</body>
+</html>
