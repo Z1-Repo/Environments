@@ -21,7 +21,7 @@ async function updateData(updatedData) {
     await fetch(url, {
         method: "PUT",
         headers: {
-            Authorization: `token ${TOKEN}`,
+            Authorization: `bearer ${TOKEN}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
