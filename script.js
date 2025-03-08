@@ -1,36 +1,30 @@
-document.addEventListener("DOMContentLoaded", () => {
-    fetchTableData("frontend");
-    fetchTableData("backend");
 
-    document.getElementById("frontendForm").addEventListener("submit", (e) => submitForm(e, "frontend"));
-    document.getElementById("backendForm").addEventListener("submit", (e) => submitForm(e, "backend"));
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Could not connect to MongoDB', err));
+
+// Routes
+app.get('/', (req, res) => {
+  res.send('API is running');
 });
 
-function submitForm(event, type) {
-    event.preventDefault();
-    const form = event.target;
-    const formData = new FormData(form);
-    formData.append("type", type);
-
-    fetch("crud.php", { method: "POST", body: formData })
-        .then(response => response.text())
-        .then(() => {
-            fetchTableData(type);
-            form.reset();
-        });
-}
-
-function fetchTableData(type) {
-    fetch(`crud.php?type=${type}`)
-        .then(response => response.json())
-        .then(data => {
-            const tableBody = document.querySelector(`#${type}Table tbody`);
-            tableBody.innerHTML = "";
-            data.forEach((row, index) => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${index + 1}</td>` +
-                    Object.values(row).map(value => `<td>${value}</td>`).join("");
-                tableBody.appendChild(tr);
-            });
-        });
-}
+// Start server
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
+});
