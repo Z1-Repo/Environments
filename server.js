@@ -1,60 +1,96 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
+require("dotenv").config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(cors()); 
 app.use(express.json());
-app.use(cors());
+app.use(express.static(path.join(__dirname, "public"))); // Serve static files
 
-mongoose.connect("mongodb+srv://Z1-Repo:Kashyap_1998@cluster0.plkss.mongodb.net/environmentDB?retryWrites=true&w=majority&appName=Cluster0", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+const mongoURI = process.env.MONGO_URI;
+
+mongoose
+  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
+
+// Define Schema and Model
+const recordSchema = new mongoose.Schema({
+  type: { type: String, required: true }, // "frontend" or "backend"
+  environment: { type: String, required: true },
+  build: { type: String, required: true },
+  developer: { type: String, required: true },
+  qa: { type: String, required: true },
 });
 
-const RecordSchema = new mongoose.Schema({
-    environment: String,
-    build: String,
-    developer: String,
-    qa: String,
+const Record = mongoose.model("Record", recordSchema);
+
+// Serve HTML Page
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-const FrontendRecord = mongoose.model("FrontendRecord", RecordSchema);
-const BackendRecord = mongoose.model("BackendRecord", RecordSchema);
-
-// API to get records
-app.get("/api/frontend", async (req, res) => {
-    const records = await FrontendRecord.find();
-    res.json(records);
-});
-
-app.get("/api/backend", async (req, res) => {
-    const records = await BackendRecord.find();
-    res.json(records);
-});
-
-// API to add records
-app.post("/api/frontend", async (req, res) => {
-    const newRecord = new FrontendRecord(req.body);
+// API to Add Record
+app.post("/addRecord", async (req, res) => {
+  try {
+    const { type, environment, build, developer, qa } = req.body;
+    if (!type || !environment || !build || !developer || !qa) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+    const newRecord = new Record({ type, environment, build, developer, qa });
     await newRecord.save();
-    res.json(newRecord);
+    res.status(201).json(newRecord);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.post("/api/backend", async (req, res) => {
-    const newRecord = new BackendRecord(req.body);
-    await newRecord.save();
-    res.json(newRecord);
+// API to Update Record
+app.put("/updateRecord/:id", async (req, res) => {
+  try {
+    const { environment, build, developer, qa } = req.body;
+    const updatedRecord = await Record.findByIdAndUpdate(
+      req.params.id,
+      { environment, build, developer, qa },
+      { new: true }
+    );
+
+    if (!updatedRecord) {
+      return res.status(404).json({ error: "Record not found" });
+    }
+
+    res.json({ message: "✅ Record updated successfully", updatedRecord });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-// API to delete records
-app.delete("/api/frontend/:id", async (req, res) => {
-    await FrontendRecord.findByIdAndDelete(req.params.id);
-    res.json({ message: "Record deleted" });
+// API to Get All Records
+app.get("/getRecords", async (req, res) => {
+  try {
+    const records = await Record.find();
+    res.json(records);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.delete("/api/backend/:id", async (req, res) => {
-    await BackendRecord.findByIdAndDelete(req.params.id);
-    res.json({ message: "Record deleted" });
+// API to Delete Record
+app.delete("/deleteRecord/:id", async (req, res) => {
+  try {
+    await Record.findByIdAndDelete(req.params.id);
+    res.json({ message: "✅ Record deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Start Server
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+
