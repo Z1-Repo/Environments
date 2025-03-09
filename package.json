@@ -1,8 +1,8 @@
 {
   "name": "nodejs",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Environment-Status",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +15,12 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongoose": "^8.12.1"
+    "path": "^0.12.7"
   }
+ "scripts": {
+    "start": "node server.js",
+    "build": "echo 'No build step needed' "
+  },
 }
+
+  
