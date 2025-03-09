@@ -10,24 +10,14 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "public"))); // Serve static files from 'public' directory
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, "public")));
-
-// MongoDB Connection
+// Connect to MongoDB
 const mongoURI = process.env.MONGO_URI;
-if (!mongoURI) {
-  console.error("❌ MONGO_URI is missing in environment variables");
-  process.exit(1);
-}
-
-mongoose
-  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("✅ Connected to MongoDB"))
-  .catch((err) => {
-    console.error("❌ MongoDB Connection Error:", err);
-    process.exit(1);
-  });
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+db.on("error", (err) => console.error("❌ MongoDB Connection Error:", err));
+db.once("open", () => console.log("✅ Connected to MongoDB"));
 
 // Define Schema and Model
 const recordSchema = new mongoose.Schema({
@@ -93,17 +83,17 @@ app.get("/getRecords", async (req, res) => {
 // API to Delete Record
 app.delete("/deleteRecord/:id", async (req, res) => {
   try {
-    await Record.findByIdAndDelete(req.params.id);
+    const deletedRecord = await Record.findByIdAndDelete(req.params.id);
+    if (!deletedRecord) {
+      return res.status(404).json({ error: "Record not found" });
+    }
     res.json({ message: "✅ Record deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Handle unknown routes to serve frontend
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+// Start server for Railway.app
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
-
-// Start Server
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
